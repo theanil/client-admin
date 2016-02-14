@@ -791,7 +791,7 @@
 		
 	</div><!-- /content -->
 </div>	
-	
+		
 <div data-role="page" class="jqm-demos" id="login" data-title="APP">
 
      <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
@@ -815,6 +815,31 @@
 			</fieldset>
 			
 			<input type="button" data-theme="b" name="submit" id="submit_login2" value="Submit">
+
+		</form>
+		
+	</div><!-- /content -->
+</div>	
+
+ <div data-role="page" class="jqm-demos" id="barcode" data-title="APP">
+
+     <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
+        <h1>App</h1>
+        <a href="#" Onclick="ShowHome2();return false;" data-icon="home" data-iconpos="notext">Menu</a>
+    </div><!-- /header -->
+
+    <div role="main" class="ui-content jqm-content jqm-fullwidth">
+
+    	<center><h1>Ticket</h1></center>
+
+		<form id="lform" class="ui-body ui-body-a ui-corner-all" data-ajax="false">
+
+			<fieldset data-role="fieldcontain"> 
+				<label for="username">Barcode No:</label>
+				<input type="text" name="barcodeid" id="barcodeid" minlength="4" maxlength="100" readonly>
+			</fieldset>
+			
+			<input type="button" data-theme="b" name="submit" id="submit_barcode" value="Accept">
 
 		</form>
 		

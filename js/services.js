@@ -324,11 +324,15 @@ $(document).on('pageinit', '#login', function()
 function ValidateStart()
 {
    cordova.plugins.barcodeScanner.scan(
-      function (result) {
-          alert("We got a barcode\n" +
-                "Result: " + result.text + "\n" +
-                "Format: " + result.format + "\n" +
-                "Cancelled: " + result.cancelled);
+      function (result)
+	  {
+          //alert("We got a barcode\n" +
+           //     "Result: " + result.text + "\n" +
+           //     "Format: " + result.format + "\n" +
+           //     "Cancelled: " + result.cancelled);
+		   
+		   //alert("Result: " + result.text);
+		   alert("Got Data");
       }, 
       function (error) {
           alert("Scanning failed: " + error);
@@ -336,6 +340,122 @@ function ValidateStart()
    );
    
 }   
+
+function ValidateStart2()
+{
+	ticket = "1-T986662aa4ab9b97221550ef49fecd5";
+   	$.mobile.changePage( "#barcode",null, true, true);
+	$("#barcodeid").val(ticket);
+   
+} 
+
+$(document).on('pageinit', '#barcode', function()
+{  
+	$(document).on('click', '#submit_barcode', function(e) 
+	{ // catch the form's submit event
+		
+		if(e.handled !== true) // This will prevent event triggering more then once
+		{
+			//alert('Clicked');
+			//alert(localStorage.device_uuid);
+			  //document.getElementById("l_device_platform").value = localStorage.device_platform;
+			  //document.getElementById("l_device_uuid").value = localStorage.device_uuid;
+			  //document.getElementById("l_device_browser").value = localStorage.device_browser;		
+			  
+			 // alert($('#lform').serialize());
+			barcodeid = document.getElementById("barcodeid").value;
+			//password = document.getElementById("password").value;
+			
+			device_id= localStorage.device_uuid;
+			device_platform= localStorage.device_platform;
+			device_browser= localStorage.device_browser;
+			session_version= localStorage.session_version;
+			//alert(barcodeid);
+			//alert(password);
+
+			//return false;
+		  
+			//if($('#barcodeid').val().length > 0 && $('#password').val().length > 0)
+			if($('#barcodeid').val().length > 0)
+			{
+					//alert(localStorage.getItem("session_id_admin"));
+				// Send data to server through the Ajax call
+				// action is functionality we want to call and outputJSON is our data
+
+					$.mobile.loading( 'show', {
+						text: 'Checking Barcode ...',
+						textVisible: true,
+						theme: 'a',
+						html: ""
+					});	
+					
+					//alert(serviceURL);
+					url = serviceURL + 'barcode/1';
+					//alert(url);//return false;
+					//alert(localStorage.session_id_admin);
+					
+					$.ajax({url: url,
+						data: {barcode: barcodeid, device_id: device_id, device_platform: device_platform, device_browser: device_browser, ver: session_version, session: localStorage.session_id_admin},
+						type: 'post',                   
+						async: 'true',
+						dataType: 'json',
+						beforeSend: function() {
+							// This callback function will trigger before data is sent
+							//$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
+							$.mobile.loading( "show" );
+						},
+						complete: function() {
+							// This callback function will trigger on data sent/received complete
+						   // $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+							$.mobile.loading( "hide" );
+						},
+						success: function (result) {
+							if(result.status == 'success') 
+							{
+								$.mobile.loading( "hide" );
+								//alert('ok');
+								//alert(result.status);
+								//alert(result.message);
+								$.mobile.changePage( "#main",null, true, true);
+								//return false;
+								//alert(username);
+								//$('#username2').val(username);
+								showMessage(result.message,null,result.message,'OK');
+								//ShowHome();
+								
+							} else 
+							{
+								//alert(result.message);
+								$.mobile.loading( "hide" );								
+								showMessage(result.message,null,result.message,'OK');
+								//alert('Logon unsuccessful!');
+							}
+						},
+						error: function (request,error) {
+							// This callback function will trigger on unsuccessful action                
+							//alert('Please check your data connection!');
+							showMessage('Please check your data connection!',null,'Error','OK');
+							$.mobile.loading( "hide" );	
+						}
+					});                   
+				} else {
+					//alert('Please fill all necessary fields');
+					showMessage('Please fill all necessary fields',null,'Error','OK');
+					//$( "[data-role='navbar']" ).navbar();
+					//$( "[data-role='header'], [data-role='footer']" ).toolbar();
+					//$( "[data-role='footer']" ).toolbar( "refresh" );
+					
+					$.fixedToolbars.show();
+					//$.mobile.loading( "show" );
+						
+				}    
+			
+			e.handled = true;
+		}
+		
+		return false; // cancel original event to prevent form submitting
+	});    
+});
 
 function ListServices()
 {	
