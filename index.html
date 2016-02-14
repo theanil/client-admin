@@ -51,7 +51,7 @@
 			//$("#app-status-ul2").append('<li>Page: ' + page + '</li>').listview("refresh");
 			//alert($.mobile.activePage.attr("id"));
 			//if( $("#main").length > 0)
-			if( page == 'beforelogin' || page == 'main')
+			if( page == 'login' || page == 'main')
 			{
 				// call this to get a new token each time. don't call it to reuse existing token.
 				e.preventDefault();
@@ -796,7 +796,6 @@
 
      <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
         <h1>App Admin</h1>
-        <a href="#" Onclick="ShowHome2();return false;" data-icon="home" data-iconpos="notext">Menu</a>
     </div><!-- /header -->
 
     <div role="main" class="ui-content jqm-content jqm-fullwidth">
