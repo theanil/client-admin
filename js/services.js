@@ -332,10 +332,16 @@ function ValidateStart()
            //     "Cancelled: " + result.cancelled);
 		   
 		   //alert("Result: " + result.text);
-		   alert("Got Data");
-		   	
-			$.mobile.changePage( "#barcode",null, true, true);
-			$("#barcodeid").val(result.text);
+		   if(result.text != '')
+		   {
+				alert("Got Data");
+
+				$.mobile.changePage( "#barcode",null, true, true);
+				$("#barcodeid").val(result.text);
+		   }else
+		   {
+			   alert("Scanning failed - no data collected ");
+		   }
 	
       }, 
       function (error) {
