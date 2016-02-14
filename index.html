@@ -152,50 +152,11 @@
 	<script>
 	$(document).on('pageinit', '#main', function()
 	{
-		dt = localStorage.session_validity;
-
-		var d = new Date();
 		
-		var dd = dt.substring(8, 10);
-		var mm = dt.substring(5, 7);
-		var yy = dt.substring(0, 4);
-		
-		//alert(dd + mm + yy);
-		var d2 = new Date(yy,Number(mm)-1,Number(dd));
-		//alert(Number(d));
-		//alert(Number(d2));
-		
-		d.setHours(0);
-		d.setMinutes(0, 0, 0);
-		d2.setHours(0);
-		d2.setMinutes(0, 0, 0);
-		var datediff = Math.abs(d.getTime() - d2.getTime()); // difference 
-		var diff2= parseInt(datediff / (24 * 60 * 60 * 1000), 10); 
-		//alert(d.getTime());
-		//alert(diff2);
-		//if(d2 <d)
-		if(diff2 < 0)
-		{
-			alert("Validity is expired, Logging out of system");
-			LogOut();
-		}
-
-		var dt2 = dd + "-" + mm + "-" +yy;
-		
-		//alert(dd + " * " + mm + " * " + yy);
-		//alert(localStorage.session_id_local);
-		//alert(localStorage.device_uuid);
-		//alert(localStorage.session_validity);
 		$("#welcome_message").html('');
 		$("#welcome_message").append("<li>" + 'Welcome ' + localStorage.session_name + "</li>").listview("refresh");
 		//$("#welcome_message").append("<li>" + 'Validity: ' + dt2 + "</li>").listview("refresh");
-		$("#welcome_message").append("<li>" + 'Balance: Rs ' + localStorage.session_id_balance + "</li>").listview("refresh");
-		if(diff2>0 && diff2<=30)
-		{
-			username = localStorage.session_id_username;
-			//alert('<li><a href="#" onclick="Renew(' + "'" + username + "'" + ');return false;">' + "Renew Subscription" +'</a> </li>');
-			//$("#welcome_message").append('<li><a href="#" onclick="Renew(' + "'" + username + "'" + ');return false;">' + "Renew Subscription" +'</a> </li>').listview("refresh");
-		}	
+		//$("#welcome_message").append("<li>" + 'Balance: Rs ' + localStorage.session_id_balance + "</li>").listview("refresh");
 		
 	});
 	</script>	
@@ -216,7 +177,7 @@
  <div data-role="page" class="jqm-demos" id="main" data-title="APP">
 
     <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
-        <h1>App</h1>
+        <h1>App Admin</h1>
         <a href="#nav-panel-m2" data-icon="bars" data-iconpos="notext">Menu</a>
 		
     </div><!-- /header -->
@@ -834,24 +795,24 @@
 <div data-role="page" class="jqm-demos" id="login" data-title="APP">
 
      <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
-        <h1>App</h1>
+        <h1>App Admin</h1>
         <a href="#" Onclick="ShowHome2();return false;" data-icon="home" data-iconpos="notext">Menu</a>
     </div><!-- /header -->
 
     <div role="main" class="ui-content jqm-content jqm-fullwidth">
 
-    	<center><h1>Login</h1></center>
+    	<center><h1>Login Admin</h1></center>
 
 		<form id="lform" class="ui-body ui-body-a ui-corner-all" data-ajax="false">
 
 			<fieldset data-role="fieldcontain"> 
-				<label for="username">Membership No:</label>
+				<label for="username">User ID:</label>
 				<input type="text" name="username" id="username2" minlength="4" maxlength="20" required>
 			</fieldset>
 
 			<fieldset data-role="fieldcontain" style="display:none1;" id="pin_id"> 
-				<label for="password">OTP No:</label>
-				<input type="number" name="password" id="password" minlength="4" maxlength="5" required>
+				<label for="password">Password:</label>
+				<input type="password" name="password" id="password" minlength="4" maxlength="5" required>
 			</fieldset>
 			
 			<input type="button" data-theme="b" name="submit" id="submit_login2" value="Submit">

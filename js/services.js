@@ -6,7 +6,7 @@ localStorage.setItem("session_version", version);
 
 function Login()
 {
-	if(localStorage.getItem("session_id_local") == undefined)
+	if(localStorage.getItem("session_id_admin") == undefined)
 	{
 		$.mobile.changePage( "#login",null, true, true);
 	}else
@@ -17,7 +17,7 @@ function Login()
 
 function LogOut()
 {
-	localStorage.removeItem("session_id_local");
+	localStorage.removeItem("session_id_admin");
 	localStorage.removeItem("session_name");
 	localStorage.removeItem("session_org_name");
 	localStorage.removeItem("session_validity");
@@ -30,16 +30,16 @@ function LogOut()
 		html: ""
 	});	
 	
-	$.mobile.changePage( "#beforelogin",null, true, true);
+	$.mobile.changePage( "#login",null, true, true);
 	$("#app-status-ul").html('');
 	$("#app-status-ul2").html('');
 }
 
 function ShowHome()
 {	
-	if(localStorage.session_id_local == undefined)
+	if(localStorage.session_id_admin == undefined)
 	{
-		$.mobile.changePage( "#beforelogin",null, true, true);
+		$.mobile.changePage( "#login",null, true, true);
 	}else
 	{
 		//alert('test');
@@ -57,7 +57,7 @@ function ShowHome()
 
 function ShowHome2()
 {	
-	if(localStorage.session_id_local == undefined)
+	if(localStorage.session_id_admin == undefined)
 	{
 		$.mobile.changePage( "#beforelogin",null, true, true);
 	}else
@@ -69,7 +69,7 @@ function ShowHome2()
 		$.mobile.changePage( "#main",null, true, true);	
 		$("#welcome_message").html('');
 		$("#welcome_message").append("<li>Welcome " + name + "</li>").listview("refresh");
-		$("#welcome_message").append("<li>Balance: Rs " + balance + "</li>").listview("refresh");				
+		//$("#welcome_message").append("<li>Balance: Rs " + balance + "</li>").listview("refresh");				
 		//$("#welcome_message").append("<li>Validity: " + dt2 + "</li>").listview("refresh");
 		//$("#welcome_message").append('').listview("refresh");
 	}
@@ -104,7 +104,7 @@ $(document).on('pageinit', '#beforelogin', function()
 			//if($('#username').val().length > 0 && $('#password').val().length > 0)
 			if($('#username').val().length > 0)
 			{
-					//alert(localStorage.getItem("session_id_local"));
+					//alert(localStorage.getItem("session_id_admin"));
 				// Send data to server through the Ajax call
 				// action is functionality we want to call and outputJSON is our data
 
@@ -209,23 +209,23 @@ $(document).on('pageinit', '#login', function()
 		  
 			if($('#username2').val().length > 0 && $('#password').val().length > 0)
 			{
-					//alert(localStorage.getItem("session_id_local"));
-				// Send data to server through the Ajax call
-				// action is functionality we want to call and outputJSON is our data
+					//alert(localStorage.getItem("session_id_admin"));
+					// Send data to server through the Ajax call
+					// action is functionality we want to call and outputJSON is our data
 
 					$.mobile.loading( 'show', {
-						text: 'Checking Login ...',
+						text: 'Checking Admin Login ...',
 						textVisible: true,
 						theme: 'a',
 						html: ""
 					});	
 					
 					//alert(serviceURL);
-					url = serviceURL + 'login/1';
+					url = serviceURL + 'adm_login/1';
 					//alert(url);//return false;
 					
 					$.ajax({url: url,
-						data: {membership_id: username, otp: password, device_id: device_id, device_platform: device_platform, device_browser: device_browser, ver: session_version},
+						data: {user_id: username, pass: password, device_id: device_id, device_platform: device_platform, device_browser: device_browser, ver: session_version},
 						type: 'post',                   
 						async: 'true',
 						dataType: 'json',
@@ -256,33 +256,18 @@ $(document).on('pageinit', '#login', function()
 								//alert(Object.keys(result.data.session_id).length);
 								//docname = result[0].tender_doc_file[j].doc_type;
 								
-								var dt = result.data.mem_validity;
-								var dd = dt.substring(8, 10);
-								var mm = dt.substring(5, 7);
-								var yy = dt.substring(0, 4);
-								
-								var dt2 = dd + "-" + mm + "-" +yy;
-								var d = new Date();
-								var d2 = new Date(yy,Number(mm)-1,Number(dd));
-								
-								d.setHours(0);
-								d.setMinutes(0, 0, 0);
-								d2.setHours(0);
-								d2.setMinutes(0, 0, 0);
-								var datediff = Math.abs(d.getTime() - d2.getTime()); // difference 
-								var diff2= parseInt(datediff / (24 * 60 * 60 * 1000), 10); 
 								//alert(result.name);
 								//alert(dt2);return false;
 								
 								//$.mobile.changePage( "#beforelogin",null, true, true);
 								//return false;
 								localStorage.setItem("session_id_username", username);
-								localStorage.setItem("session_id_local", session_id);
+								localStorage.setItem("session_id_admin", session_id);
 								localStorage.setItem("session_name", result.data.name);
 								localStorage.setItem("session_mobileno", result.data.mobileno);
-								localStorage.setItem("session_validity", result.data.mem_validity);
+								//localStorage.setItem("session_validity", result.data.mem_validity);
 								localStorage.setItem("session_id_email_id", result.data.email);
-								localStorage.setItem("session_id_balance", result.data.balance);
+								//localStorage.setItem("session_id_balance", result.data.balance);
 								
 								//alert(result.email_id);
 								//$.mobile.changePage("#second");                         
@@ -293,7 +278,7 @@ $(document).on('pageinit', '#login', function()
 								$("#welcome_message").html('');
 								$("#welcome_message").append("<li>Welcome " + result.data.name + "</li>").listview("refresh");
 								//$("#welcome_message").append("<li>Validity: " + dt2 + "</li>").listview("refresh");
-								$("#welcome_message").append("<li>Balance: Rs " + result.data.balance + "</li>").listview("refresh");								
+								//$("#welcome_message").append("<li>Balance: Rs " + result.data.balance + "</li>").listview("refresh");								
 								if(diff2>0 && diff2<=30)
 								{
 									username = localStorage.session_id_username;
@@ -336,9 +321,25 @@ $(document).on('pageinit', '#login', function()
 	});    
 });
 
+function ValidateStart()
+{
+   cordova.plugins.barcodeScanner.scan(
+      function (result) {
+          alert("We got a barcode\n" +
+                "Result: " + result.text + "\n" +
+                "Format: " + result.format + "\n" +
+                "Cancelled: " + result.cancelled);
+      }, 
+      function (error) {
+          alert("Scanning failed: " + error);
+      }
+   );
+   
+}   
+
 function ListServices()
 {	
-	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_local;
+	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin;
 	//alert(searchparam);
 	//return false;
 	//http://localhost/h_app/services/list_services/1?session=HA2762630b44f339a768eacc488029ef4d4943a83d
@@ -384,7 +385,7 @@ function ListServices()
 			//return false;
 			
 			//alert(result[0][0].site_tender_id);
-			//alert(localStorage.session_id_local);
+			//alert(localStorage.session_id_admin);
 			
 			$.mobile.changePage( "#search_result_afterlogin_book",null, true, true);
 			$("#sum_list_afterlogin_book").html('');
@@ -450,7 +451,7 @@ function BookServices()
 	chargeable = $("#chargeable").val();
 	service_name = $("#service_name").val();
 	
-	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_local + "&service_id="+ service_id;
+	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin + "&service_id="+ service_id;
 	//alert(searchparam);
 	
 	if(charges == '')
@@ -511,7 +512,7 @@ function BookServices()
 			ListTicket(1);
 	
 			//alert(result[0][0].site_tender_id);
-			//alert(localStorage.session_id_local);
+			//alert(localStorage.session_id_admin);
 			
 		} else 
 		{
@@ -537,7 +538,7 @@ function ListTicket(last)
 	//chargeable = $("#chargeable").val();
 	//service_name = $("#service_name").val();
 	
-	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_local;
+	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin;
 	//alert(searchparam);
 	
 	//return false;
@@ -586,7 +587,7 @@ function ListTicket(last)
 			//return false;
 			
 			//alert(result[0][0].site_tender_id);
-			//alert(localStorage.session_id_local);
+			//alert(localStorage.session_id_admin);
 			
 			$.mobile.changePage( "#search_result_afterlogin_list",null, true, true);
 			$("#sum_list_afterlogin_list").html('');
@@ -680,7 +681,7 @@ function TransTicket()
 	//chargeable = $("#chargeable").val();
 	//service_name = $("#service_name").val();
 	
-	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_local;
+	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin;
 	//alert(searchparam);
 	
 	//return false;
@@ -729,7 +730,7 @@ function TransTicket()
 			//return false;
 			
 			//alert(result[0][0].site_tender_id);
-			//alert(localStorage.session_id_local);
+			//alert(localStorage.session_id_admin);
 			
 			$.mobile.changePage( "#search_result_afterlogin_list",null, true, true);
 			$("#sum_list_afterlogin_list").html('');
@@ -817,7 +818,7 @@ function RechargeHistory()
 	//chargeable = $("#chargeable").val();
 	//service_name = $("#service_name").val();
 	
-	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_local;
+	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin;
 	//alert(searchparam);
 	
 	//return false;
@@ -866,7 +867,7 @@ function RechargeHistory()
 			//return false;
 			
 			//alert(result[0][0].site_tender_id);
-			//alert(localStorage.session_id_local);
+			//alert(localStorage.session_id_admin);
 			
 			$.mobile.changePage( "#search_result_recharge_history",null, true, true);
 			$("#sum_list_recharge_history").html('');
@@ -941,7 +942,7 @@ function RechargeFinal()
 {		
 	rechargeamt = $("#rechargeamt").val();
 	
-	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_local + "&amt="+ rechargeamt;
+	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin + "&amt="+ rechargeamt;
 	//alert(searchparam);
 	
 	if(rechargeamt == '')
@@ -996,7 +997,7 @@ function RechargeFinal()
 			//alert(Object.keys(result.data.service).length);
 			//console.log(Object.keys(result.data.service));
 			//alert(result[0][0].site_tender_id);
-			//alert(localStorage.session_id_local);
+			//alert(localStorage.session_id_admin);
 			
 			$.mobile.changePage( "#search_result_afterlogin_thanks",null, true, true);
 			$("#sum_list_afterlogin_thanks").html('');
@@ -1056,7 +1057,7 @@ $(document).on('pageinit', '#freetrial', function()
 						success: function (result) {
 							if(result.status) 
 							{
-								//localStorage.setItem("session_id_local", result.session_id);
+								//localStorage.setItem("session_id_admin", result.session_id);
 								//$.mobile.changePage("#second");                         
 								//alert(result.message);
 								//alert(result.session_id);
@@ -1132,7 +1133,7 @@ $(document).on('pageinit', '#subscribe', function()
 						success: function (result) {
 							if(result.status) 
 							{
-								//localStorage.setItem("session_id_local", result.session_id);
+								//localStorage.setItem("session_id_admin", result.session_id);
 								//$.mobile.changePage("#second");                         
 								//alert(result.message);
 								//alert(result.session_id);
@@ -1172,12 +1173,12 @@ $(document).on('pageinit', '#subscribe', function()
 function GetProfile()
 {
 	//alert('get profile');
-	if(localStorage.session_id_local == undefined)
+	if(localStorage.session_id_admin == undefined)
 	{
 		alert("Please login to access this facility");
 		return false;
 	}
-	session_id = localStorage.session_id_local;
+	session_id = localStorage.session_id_admin;
 	device_id= localStorage.device_uuid;
 	device_platform= localStorage.device_platform;
 	device_browser= localStorage.device_browser;
@@ -1208,7 +1209,7 @@ function GetProfile()
 		success: function (result) {
 			if(result.status) 
 			{
-				//localStorage.setItem("session_id_local", result.session_id);
+				//localStorage.setItem("session_id_admin", result.session_id);
 				//$.mobile.changePage("#second");                         
 				//alert(result.message);
 				//alert(result.message);
@@ -1218,7 +1219,7 @@ function GetProfile()
 				//alert(result.Total);
 				//alert(result[0][0].name);
 				//alert(result[0].length);
-				//alert(localStorage.session_id_local);
+				//alert(localStorage.session_id_admin);
 				$.mobile.loading( "hide" );	
 				
 				if(result.Total >0)
@@ -1230,7 +1231,7 @@ function GetProfile()
 					$("#pr_regcountry").val(result[0][0].country);
 					$("#pr_regcountry").selectmenu('refresh');
 					
-					document.getElementById("pr_session_id").value = localStorage.session_id_local;
+					document.getElementById("pr_session_id").value = localStorage.session_id_admin;
 					document.getElementById("pr_device_platform").value = localStorage.device_platform;
 					document.getElementById("pr_device_uuid").value = localStorage.device_uuid;
 					document.getElementById("pr_device_browser").value = localStorage.device_browser;						
@@ -1320,7 +1321,7 @@ $(document).on('pageinit', '#profile', function()
 							$.mobile.loading( "hide" );	
 							if(result.status) 
 							{
-								//localStorage.setItem("session_id_local", result.session_id);
+								//localStorage.setItem("session_id_admin", result.session_id);
 								//$.mobile.changePage("#second");                         
 								//alert(result.message);
 								//alert(result.session_id);
@@ -1374,7 +1375,7 @@ $(document).on('pageinit', '#contact', function()
 			  document.getElementById("c_device_platform").value = localStorage.device_platform;
 			  document.getElementById("c_device_uuid").value = localStorage.device_uuid;
 			  document.getElementById("c_device_browser").value = localStorage.device_browser;
-			  document.getElementById("c_session_id").value = localStorage.session_id_local;
+			  document.getElementById("c_session_id").value = localStorage.session_id_admin;
 
 			  //alert(localStorage.device_uuid);
 			  //alert(document.getElementById("s_device_uuid").value);
@@ -1403,7 +1404,7 @@ $(document).on('pageinit', '#contact', function()
 							$.mobile.loading( "hide" );	
 							if(result.status) 
 							{
-								//localStorage.setItem("session_id_local", result.session_id);
+								//localStorage.setItem("session_id_admin", result.session_id);
 								//$.mobile.changePage("#second");                         
 								//alert(result.message);
 								//alert(result.session_id);
@@ -1453,7 +1454,7 @@ $(document).on('pageinit', '#email_alert', function()
 			  document.getElementById("e_device_platform").value = localStorage.device_platform;
 			  document.getElementById("e_device_uuid").value = localStorage.device_uuid;
 			  document.getElementById("e_device_browser").value = localStorage.device_browser;
-			  document.getElementById("e_session_id").value = localStorage.session_id_local;
+			  document.getElementById("e_session_id").value = localStorage.session_id_admin;
 
 			  //alert(localStorage.device_uuid);
 			  //alert(document.getElementById("s_device_uuid").value);
@@ -1482,7 +1483,7 @@ $(document).on('pageinit', '#email_alert', function()
 							$.mobile.loading( "hide" );	
 							if(result.status) 
 							{
-								//localStorage.setItem("session_id_local", result.session_id);
+								//localStorage.setItem("session_id_admin", result.session_id);
 								//$.mobile.changePage("#second");                         
 								//alert(result.message);
 								//alert(result.session_id);
