@@ -347,7 +347,7 @@ function ValidateStart()
 
 function ValidateStart2()
 {
-	ticket = "1-T986662aa4ab9b97221550ef49fecd5";
+	ticket = "2-T211e143b2dc124cd02532900200ac0";
    	$.mobile.changePage( "#barcode",null, true, true);
 	$("#barcodeid").val(ticket);
    
