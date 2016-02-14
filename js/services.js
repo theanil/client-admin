@@ -333,6 +333,10 @@ function ValidateStart()
 		   
 		   //alert("Result: " + result.text);
 		   alert("Got Data");
+		   	
+			$.mobile.changePage( "#barcode",null, true, true);
+			$("#barcodeid").val(result.text);
+	
       }, 
       function (error) {
           alert("Scanning failed: " + error);
