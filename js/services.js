@@ -554,7 +554,7 @@ function TicketHistory()
 				//service_name,datec,s_validity
 				console.log("<li><a href=\"#\" onclick=\"TicketID(" + "'" + ticket_no + "'," + "'" + service_name + "'," + "'" + datec + "'," + "'" + s_validity + "'" + ");return false;\">" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "</a></li>");
 				
-				$("#sum_list_afterlogin_list").append("<li><a href=\"#\">Service: " + service_name + "<br>Client: " + name + "<br>Booking Date: " + datec + "<br>Checking Date: " + used_time + "<br>Validity: " + s_validity + "</a></li>").listview("refresh");
+				$("#sum_list_afterlogin_list").append("<li><a href=\"#\">Service: " + service_name + "<br>Member: " + name + "<br>Booking Date: " + datec + "<br>Checking Date: " + used_time + "<br>Validity: " + s_validity + "</a></li>").listview("refresh");
 				//$("#sum_list_afterlogin_list").append("<li>" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "<br>" + "</li>").listview("refresh");
 									
 				//console.log(result[0][i].Location);
