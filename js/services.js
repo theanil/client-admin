@@ -405,72 +405,72 @@ function CheckTicket(barcodeid)
   
 	//if($('#barcodeid').val().length > 0 && $('#password').val().length > 0)
 	//if($('#barcodeid').val().length > 0)
-	alert(barcodeid);
+	//alert(barcodeid);
 	//alert(barcodeid.val().length);
 	
 	if(barcodeid != '')
 	{
-			//alert(localStorage.getItem("session_id_admin"));
+		//alert(localStorage.getItem("session_id_admin"));
 		// Send data to server through the Ajax call
 		// action is functionality we want to call and outputJSON is our data
 
-			$.mobile.loading( 'show', {
-				text: 'Checking Barcode ...',
-				textVisible: true,
-				theme: 'a',
-				html: ""
-			});	
-			
-			//alert(serviceURL);
-			url = serviceURL + 'barcode/1';
-			//alert(url);//return false;
-			var session = localStorage.session_id_admin;
-			//alert(session);
-			
-			$.ajax({url: url,
-				data: { barcode: barcodeid, session: session, member_id: localStorage.session_member_id, device_id: device_id, device_platform: device_platform, ver: session_version, device_browser: device_browser},
-				type: 'post',                   
-				async: 'true',
-				dataType: 'json',
-				beforeSend: function() {
-					// This callback function will trigger before data is sent
-					//$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
-					$.mobile.loading( "show" );
-				},
-				complete: function() {
-					// This callback function will trigger on data sent/received complete
-				   // $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+		$.mobile.loading( 'show', {
+			text: 'Checking Barcode ...',
+			textVisible: true,
+			theme: 'a',
+			html: ""
+		});	
+		
+		//alert(serviceURL);
+		url = serviceURL + 'barcode/1';
+		//alert(url);//return false;
+		var session = localStorage.session_id_admin;
+		//alert(session);
+		
+		$.ajax({url: url,
+			data: { barcode: barcodeid, session: session, member_id: localStorage.session_member_id, device_id: device_id, device_platform: device_platform, ver: session_version, device_browser: device_browser},
+			type: 'post',                   
+			async: 'true',
+			dataType: 'json',
+			beforeSend: function() {
+				// This callback function will trigger before data is sent
+				//$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
+				$.mobile.loading( "show" );
+			},
+			complete: function() {
+				// This callback function will trigger on data sent/received complete
+			   // $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+				$.mobile.loading( "hide" );
+			},
+			success: function (result) {
+				if(result.status == 'success') 
+				{
 					$.mobile.loading( "hide" );
-				},
-				success: function (result) {
-					if(result.status == 'success') 
-					{
-						$.mobile.loading( "hide" );
-						//alert('ok');
-						//alert(result.status);
-						//alert(result.message);
-						$.mobile.changePage( "#main",null, true, true);
-						//return false;
-						//alert(username);
-						//$('#username2').val(username);
-						showMessage(result.message,null,appname,'OK');
-						//ShowHome();
-						
-					} else 
-					{
-						//alert(result.message);
-						$.mobile.loading( "hide" );								
-						showMessage(result.message,null,appname,'OK');
-						//alert('Logon unsuccessful!');
-					}
-				},
-				error: function (request,error) {
-					// This callback function will trigger on unsuccessful action                
-					//alert('Please check your data connection!');
-					showMessage('Please check your data connection!',null,'Error','OK');
-					$.mobile.loading( "hide" );	
+					//alert('ok');
+					//alert(result.status);
+					//alert(result.message);
+					$.mobile.changePage( "#main",null, true, true);
+					//return false;
+					//alert(username);
+					//$('#username2').val(username);
+					showMessage(result.message,null,appname,'OK');
+					//ShowHome();
+					
+				} else 
+				{
+					//alert(result.message);
+					$.mobile.loading( "hide" );								
+					showMessage(result.message,null,appname,'OK');
+					//alert('Logon unsuccessful!');
 				}
-			});                   
+			},
+			error: function (request,error) {
+				// This callback function will trigger on unsuccessful action                
+				//alert('Please check your data connection!');
+				showMessage('Please check your data connection!',null,'Error','OK');
+				$.mobile.loading( "hide" );	
+			}
+		});                   
 	}
 }
 		
