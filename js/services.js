@@ -323,7 +323,7 @@ $(document).on('pageinit', '#login', function()
 	});    
 });
 
-function ValidateStart1()
+function ValidateStart()
 {
    cordova.plugins.barcodeScanner.scan(
       function (result)
@@ -358,7 +358,7 @@ function ValidateStart1()
    
 }   
 
-function ValidateStart()
+function ValidateStart1()
 {
 	ticket = "3-Tb3c4e2b45f58f856d368e5957bea23";
    	$.mobile.changePage( "#barcode",null, true, true);
