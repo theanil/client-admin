@@ -337,8 +337,9 @@ function ValidateStart()
 		   if(result.text != '')
 		   {
 				//alert("Got Data");
-				CheckTicket(result.text);
+				
 				//showMessage("Got Data "+ result.text,null,appname,'OK');
+				CheckTicket(result.text);
 				
 				//$.mobile.changePage( "#barcode",null, true, true);
 				//$("#barcodeid").val(result.text);
@@ -473,7 +474,113 @@ function CheckTicket(barcodeid)
 		});                   
 	}
 }
-		
+
+function TicketHistory()
+{
+	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin;
+	//alert(searchparam);
+	
+	//return false;
+	//http://localhost/h_app/services/history_ticket/1?session=HA8ca047471e1c0810733849d1a3d13a013be6986d		
+	url = serviceURL + 'history_ticket/1'
+	//alert(url);
+
+	//return false;
+	$.ajax({url: url ,
+	data: searchparam,
+	type: 'get',                   
+	async: 'true',
+	dataType: 'json',
+	beforeSend: function() {
+		// This callback function will trigger before data is sent
+		//$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
+		//$.mobile.loading( "show" );
+		$.mobile.loading( 'show', {
+			text: 'Listing Ticket ...',
+			textVisible: true,
+			theme: 'a',
+			html: ""
+		});
+			
+	},
+	complete: function() {
+		// This callback function will trigger on data sent/received complete
+	   // $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+		$.mobile.loading( "hide" );
+	},
+	success: function (result) {
+		if(result.status == 'success') 
+		{		
+			$.mobile.loading( "hide" );	
+			//alert(result.message);
+			//return false;
+			//alert(result.data.balance);
+			console.log(result.message);
+			//alert(Object.keys(result.data.service).length);
+			//console.log(Object.keys(result.data.service));
+			//return false;
+			//alert(result.S_ID);
+			//alert(result.Offset);
+			//alert(result.Total);
+			//alert(newtotal);
+			//return false;
+			
+			//alert(result[0][0].site_tender_id);
+			//alert(localStorage.session_id_admin);
+			
+			$.mobile.changePage( "#search_result_afterlogin_list",null, true, true);
+			$("#sum_list_afterlogin_list").html('');
+			
+			for(i=0; i<Object.keys(result.data.service).length; i++)
+			{
+				service_id = result.data.service[i].service_id;
+				service_name = result.data.service[i].service_name;
+				service_logo = result.data.service[i].ticket_logo;
+				s_validity = result.data.service[i].s_validity;
+				sticket_id = result.data.service[i].sticket_id;
+				ticket_no = result.data.service[i].ticket_no;
+				chargeable = result.data.service[i].chargeable;
+				//charges = result.data.service[i].charges;
+				comments = result.data.service[i].comments;
+				datec = result.data.service[i].datec;
+				
+				ticket_url = serviceURL + 'genqr?ticket_no=' + sticket_id;
+				//ticket_url = '';
+				img = '<img src="' + ticket_url + '" >';
+				console.log(service_name);
+				console.log(img);
+				//service_name,datec,s_validity
+				console.log("<li><a href=\"#\" onclick=\"TicketID(" + "'" + ticket_no + "'," + "'" + service_name + "'," + "'" + datec + "'," + "'" + s_validity + "'" + ");return false;\">" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "</a></li>");
+				
+				$("#sum_list_afterlogin_list").append("<li>" + service_name + "<br>Date of Booking: <br>" + datec + "<br>Validity: " + s_validity + "</li>").listview("refresh");
+				//$("#sum_list_afterlogin_list").append("<li>" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "<br>" + "</li>").listview("refresh");
+									
+				//console.log(result[0][i].Location);
+				
+				//$("#sum_list_afterlogin_list").append("<li style='padding-top: 10px; padding-bottom: 10px'></li>").listview("refresh");
+			}
+			if(i == 0)
+			{
+				//alert('no ticket');
+				$("#sum_list_afterlogin_list").append("<li><center>Active Ticket is not available.</center></li>").listview("refresh");
+			}
+		} else 
+		{
+			//alert(result.message);
+			$.mobile.loading( "hide" );	
+			showMessage(result.message,null,'Error','OK');
+			//alert('Logon unsuccessful!'); 
+		}
+	},
+	error: function (request,error) {
+		// This callback function will trigger on unsuccessful action                
+		//alert('Please check your data connection!');
+		$.mobile.loading( "hide" );	
+		showMessage('Please check your data connection!',null,'Error','OK');
+	}
+});        
+}
+	
 function ListServices()
 {	
 	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin;
