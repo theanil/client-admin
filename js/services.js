@@ -1,6 +1,7 @@
 var serviceURL = "http://happ.phpzeal.com/services/";
 //var serviceURL = "http://localhost/h_app/services/";
 
+var appname = "H App";
 var version = "1.0";
 localStorage.setItem("session_version", version);
 
@@ -145,13 +146,13 @@ $(document).on('pageinit', '#beforelogin', function()
 								//return false;
 								//alert(username);
 								$('#username2').val(username);
-								showMessage(result.message,null,result.message,'OK');
+								showMessage(result.message,null,appname,'OK');
 								
 							} else 
 							{
 								//alert(result.message);
 								$.mobile.loading( "hide" );								
-								showMessage(result.message,null,result.message,'OK');
+								showMessage(result.message,null,appname,'OK');
 								//alert('Logon unsuccessful!');
 							}
 						},
@@ -265,6 +266,7 @@ $(document).on('pageinit', '#login', function()
 								localStorage.setItem("session_id_admin", session_id);
 								localStorage.setItem("session_name", result.data.name);
 								localStorage.setItem("session_mobileno", result.data.mobileno);
+								localStorage.setItem("session_member_id", result.data.member_id);
 								//localStorage.setItem("session_validity", result.data.mem_validity);
 								localStorage.setItem("session_id_email_id", result.data.email);
 								//localStorage.setItem("session_id_balance", result.data.balance);
@@ -291,7 +293,7 @@ $(document).on('pageinit', '#login', function()
 							{
 								//alert(result.message);
 								$.mobile.loading( "hide" );								
-								showMessage(result.message,null,result.message,'OK');
+								showMessage(result.message,null,appname,'OK');
 								//alert('Logon unsuccessful!');
 							}
 						},
@@ -321,7 +323,7 @@ $(document).on('pageinit', '#login', function()
 	});    
 });
 
-function ValidateStart()
+function ValidateStart1()
 {
    cordova.plugins.barcodeScanner.scan(
       function (result)
@@ -334,28 +336,35 @@ function ValidateStart()
 		   //alert("Result: " + result.text);
 		   if(result.text != '')
 		   {
-				alert("Got Data");
-
-				$.mobile.changePage( "#barcode",null, true, true);
-				$("#barcodeid").val(result.text);
+				//alert("Got Data");
+				showMessage("Got Data",null,appname,'OK');
+				
+				//$.mobile.changePage( "#barcode",null, true, true);
+				//$("#barcodeid").val();
+				
+				CheckTicket(result.text);
 		   }else
 		   {
-			   alert("Scanning failed - no data collected ");
+			   //alert("Scanning failed - no data collected ");
+			   showMessage("Scanning failed - no data collected ",null,appname,'OK');
 		   }
 	
       }, 
       function (error) {
-          alert("Scanning failed: " + error);
+          //alert("Scanning failed: " + error);
+		  showMessage("Scanning failed: " + error,null,appname,'OK');
       }
    );
    
 }   
 
-function ValidateStart2()
+function ValidateStart()
 {
-	ticket = "2-T211e143b2dc124cd02532900200ac0";
+	ticket = "3-Tb3c4e2b45f58f856d368e5957bea23";
    	$.mobile.changePage( "#barcode",null, true, true);
 	$("#barcodeid").val(ticket);
+	//$("#barcodeid").val(localStorage.session_id_admin);
+	
    
 } 
 
@@ -368,97 +377,11 @@ $(document).on('pageinit', '#barcode', function()
 		{
 			//alert('Clicked');
 			//alert(localStorage.device_uuid);
-			  //document.getElementById("l_device_platform").value = localStorage.device_platform;
-			  //document.getElementById("l_device_uuid").value = localStorage.device_uuid;
-			  //document.getElementById("l_device_browser").value = localStorage.device_browser;		
-			  
+
 			 // alert($('#lform').serialize());
 			barcodeid = document.getElementById("barcodeid").value;
-			//password = document.getElementById("password").value;
-			
-			device_id= localStorage.device_uuid;
-			device_platform= localStorage.device_platform;
-			device_browser= localStorage.device_browser;
-			session_version= localStorage.session_version;
 			//alert(barcodeid);
-			//alert(password);
-
-			//return false;
-		  
-			//if($('#barcodeid').val().length > 0 && $('#password').val().length > 0)
-			if($('#barcodeid').val().length > 0)
-			{
-					//alert(localStorage.getItem("session_id_admin"));
-				// Send data to server through the Ajax call
-				// action is functionality we want to call and outputJSON is our data
-
-					$.mobile.loading( 'show', {
-						text: 'Checking Barcode ...',
-						textVisible: true,
-						theme: 'a',
-						html: ""
-					});	
-					
-					//alert(serviceURL);
-					url = serviceURL + 'barcode/1';
-					//alert(url);//return false;
-					//alert(localStorage.session_id_admin);
-					
-					$.ajax({url: url,
-						data: {barcode: barcodeid, device_id: device_id, device_platform: device_platform, device_browser: device_browser, ver: session_version, session: localStorage.session_id_admin},
-						type: 'post',                   
-						async: 'true',
-						dataType: 'json',
-						beforeSend: function() {
-							// This callback function will trigger before data is sent
-							//$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
-							$.mobile.loading( "show" );
-						},
-						complete: function() {
-							// This callback function will trigger on data sent/received complete
-						   // $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
-							$.mobile.loading( "hide" );
-						},
-						success: function (result) {
-							if(result.status == 'success') 
-							{
-								$.mobile.loading( "hide" );
-								//alert('ok');
-								//alert(result.status);
-								//alert(result.message);
-								$.mobile.changePage( "#main",null, true, true);
-								//return false;
-								//alert(username);
-								//$('#username2').val(username);
-								showMessage(result.message,null,result.message,'OK');
-								//ShowHome();
-								
-							} else 
-							{
-								//alert(result.message);
-								$.mobile.loading( "hide" );								
-								showMessage(result.message,null,result.message,'OK');
-								//alert('Logon unsuccessful!');
-							}
-						},
-						error: function (request,error) {
-							// This callback function will trigger on unsuccessful action                
-							//alert('Please check your data connection!');
-							showMessage('Please check your data connection!',null,'Error','OK');
-							$.mobile.loading( "hide" );	
-						}
-					});                   
-				} else {
-					//alert('Please fill all necessary fields');
-					showMessage('Please fill all necessary fields',null,'Error','OK');
-					//$( "[data-role='navbar']" ).navbar();
-					//$( "[data-role='header'], [data-role='footer']" ).toolbar();
-					//$( "[data-role='footer']" ).toolbar( "refresh" );
-					
-					$.fixedToolbars.show();
-					//$.mobile.loading( "show" );
-						
-				}    
+			CheckTicket(barcodeid);
 			
 			e.handled = true;
 		}
@@ -467,6 +390,85 @@ $(document).on('pageinit', '#barcode', function()
 	});    
 });
 
+function CheckTicket(barcodeid)
+{		
+
+	device_id= localStorage.device_uuid;
+	device_platform= localStorage.device_platform;
+	device_browser= localStorage.device_browser;
+	session_version= localStorage.session_version;
+	//alert(barcodeid);
+	//alert(password);
+
+	//return false;
+  
+	//if($('#barcodeid').val().length > 0 && $('#password').val().length > 0)
+	if($('#barcodeid').val().length > 0)
+	{
+			//alert(localStorage.getItem("session_id_admin"));
+		// Send data to server through the Ajax call
+		// action is functionality we want to call and outputJSON is our data
+
+			$.mobile.loading( 'show', {
+				text: 'Checking Barcode ...',
+				textVisible: true,
+				theme: 'a',
+				html: ""
+			});	
+			
+			//alert(serviceURL);
+			url = serviceURL + 'barcode/1';
+			//alert(url);//return false;
+			var session = localStorage.session_id_admin;
+			//alert(session);
+			
+			$.ajax({url: url,
+				data: { barcode: barcodeid, session: session, member_id: localStorage.session_member_id, device_id: device_id, device_platform: device_platform, ver: session_version, device_browser: device_browser},
+				type: 'post',                   
+				async: 'true',
+				dataType: 'json',
+				beforeSend: function() {
+					// This callback function will trigger before data is sent
+					//$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
+					$.mobile.loading( "show" );
+				},
+				complete: function() {
+					// This callback function will trigger on data sent/received complete
+				   // $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+					$.mobile.loading( "hide" );
+				},
+				success: function (result) {
+					if(result.status == 'success') 
+					{
+						$.mobile.loading( "hide" );
+						//alert('ok');
+						//alert(result.status);
+						//alert(result.message);
+						$.mobile.changePage( "#main",null, true, true);
+						//return false;
+						//alert(username);
+						//$('#username2').val(username);
+						showMessage(result.message,null,appname,'OK');
+						//ShowHome();
+						
+					} else 
+					{
+						//alert(result.message);
+						$.mobile.loading( "hide" );								
+						showMessage(result.message,null,appname,'OK');
+						//alert('Logon unsuccessful!');
+					}
+				},
+				error: function (request,error) {
+					// This callback function will trigger on unsuccessful action                
+					//alert('Please check your data connection!');
+					showMessage('Please check your data connection!',null,'Error','OK');
+					$.mobile.loading( "hide" );	
+				}
+			});                   
+	}
+}
+		
 function ListServices()
 {	
 	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin;
