@@ -337,10 +337,10 @@ function ValidateStart()
 		   if(result.text != '')
 		   {
 				//alert("Got Data");
-				showMessage("Got Data",null,appname,'OK');
+				showMessage("Got Data "+ result.text,null,appname,'OK');
 				
 				//$.mobile.changePage( "#barcode",null, true, true);
-				//$("#barcodeid").val();
+				//$("#barcodeid").val(result.text);
 				
 				CheckTicket(result.text);
 		   }else
