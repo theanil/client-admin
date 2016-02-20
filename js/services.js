@@ -337,12 +337,13 @@ function ValidateStart()
 		   if(result.text != '')
 		   {
 				//alert("Got Data");
-				showMessage("Got Data "+ result.text,null,appname,'OK');
+				CheckTicket(result.text);
+				//showMessage("Got Data "+ result.text,null,appname,'OK');
 				
 				//$.mobile.changePage( "#barcode",null, true, true);
 				//$("#barcodeid").val(result.text);
 				
-				CheckTicket(result.text);
+				//CheckTicket(result.text);
 		   }else
 		   {
 			   //alert("Scanning failed - no data collected ");
@@ -397,13 +398,17 @@ function CheckTicket(barcodeid)
 	device_platform= localStorage.device_platform;
 	device_browser= localStorage.device_browser;
 	session_version= localStorage.session_version;
-	//alert(barcodeid);
+	
 	//alert(password);
 
 	//return false;
   
 	//if($('#barcodeid').val().length > 0 && $('#password').val().length > 0)
-	if($('#barcodeid').val().length > 0)
+	//if($('#barcodeid').val().length > 0)
+	alert(barcodeid);
+	alert(barcodeid.val().length);
+	
+	if(barcodeid.val().length > 0)
 	{
 			//alert(localStorage.getItem("session_id_admin"));
 		// Send data to server through the Ajax call
