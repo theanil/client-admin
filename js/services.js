@@ -543,6 +543,8 @@ function TicketHistory()
 				//charges = result.data.service[i].charges;
 				comments = result.data.service[i].comments;
 				datec = result.data.service[i].datec;
+				used_time = result.data.service[i].used_time;
+				name = result.data.service[i].name;
 				
 				ticket_url = serviceURL + 'genqr?ticket_no=' + sticket_id;
 				//ticket_url = '';
@@ -552,7 +554,7 @@ function TicketHistory()
 				//service_name,datec,s_validity
 				console.log("<li><a href=\"#\" onclick=\"TicketID(" + "'" + ticket_no + "'," + "'" + service_name + "'," + "'" + datec + "'," + "'" + s_validity + "'" + ");return false;\">" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "</a></li>");
 				
-				$("#sum_list_afterlogin_list").append("<li><a href=\"#\">" + service_name + "<br>Date of Booking: <br>" + datec + "<br>Validity: " + s_validity + "</a></li>").listview("refresh");
+				$("#sum_list_afterlogin_list").append("<li><a href=\"#\">Service: " + service_name + "<br>Client: " + name + "<br>Date of Booking: <br>" + datec + "<br>Date of Checking: <br>" + used_time + "<br>Validity: " + s_validity + "</a></li>").listview("refresh");
 				//$("#sum_list_afterlogin_list").append("<li>" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "<br>" + "</li>").listview("refresh");
 									
 				//console.log(result[0][i].Location);
