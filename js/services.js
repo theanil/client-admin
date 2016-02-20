@@ -406,9 +406,9 @@ function CheckTicket(barcodeid)
 	//if($('#barcodeid').val().length > 0 && $('#password').val().length > 0)
 	//if($('#barcodeid').val().length > 0)
 	alert(barcodeid);
-	alert(barcodeid.val().length);
+	//alert(barcodeid.val().length);
 	
-	if(barcodeid.val().length > 0)
+	if(barcodeid != '')
 	{
 			//alert(localStorage.getItem("session_id_admin"));
 		// Send data to server through the Ajax call
