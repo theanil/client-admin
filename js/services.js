@@ -1,4 +1,4 @@
-var serviceURL = "http://happ.phpzeal.com/services/";
+var serviceURL = "http://happ.phpzeal.com/services_v2/";
 //var serviceURL = "http://localhost/h_app/services_v2/";
 
 var appname = "H App";
