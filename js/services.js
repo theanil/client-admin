@@ -1,5 +1,5 @@
 var serviceURL = "http://happ.phpzeal.com/services/";
-//var serviceURL = "http://localhost/h_app/services/";
+//var serviceURL = "http://localhost/h_app/services_v2/";
 
 var appname = "H App";
 var version = "1.0";
