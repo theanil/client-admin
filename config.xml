@@ -6,10 +6,10 @@
         id        = "com.happ_admin.webapp"
         version   = "1.0.0">
 
-    <name>h App admin</name>
+    <name>Sample Admin</name>
 
     <description>
-        h app admin
+        Sample Admin
     </description>
 
     <author href="http://phonegap.com" email="support@phonegap.com">

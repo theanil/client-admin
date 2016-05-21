@@ -1,5 +1,5 @@
-var serviceURL = "http://happ.phpzeal.com/services_v2/";
-//var serviceURL = "http://localhost/h_app/services_v2/";
+var serviceURL = "http://demo.bluapps.in/services_v2/";
+//var serviceURL = "http://localhost/h_app_api/services_v2/";
 
 var appname = "H App";
 var version = "1.0";
@@ -208,6 +208,28 @@ $(document).on('pageinit', '#login', function()
 
 			//return false;
 		  
+			selected_club = $('#club_select').val();
+			
+			//alert(username);
+			//alert(selected_club);
+			
+			if(selected_club == null)
+			{
+				alert('Please select Club'); return false;
+			}
+			if(username.length == 0)
+			{
+				alert('Enter User ID'); return false;
+			}			
+			if(password.length ==0)
+			{
+				alert('Please Enter Password'); return false;
+			}		
+			
+			club_info = $("#club_select :selected").text();
+			//alert(club_info); return false;
+			localStorage.setItem("session_club_info", club_info);
+			
 			if($('#username2').val().length > 0 && $('#password').val().length > 0)
 			{
 					//alert(localStorage.getItem("session_id_admin"));
@@ -222,7 +244,8 @@ $(document).on('pageinit', '#login', function()
 					});	
 					
 					//alert(serviceURL);
-					url = serviceURL + 'adm_login/1';
+					//url = serviceURL + 'adm_login/1';
+					url = serviceURL + 'adm_login/' + selected_club;
 					//alert(url);//return false;
 					
 					$.ajax({url: url,
@@ -269,6 +292,7 @@ $(document).on('pageinit', '#login', function()
 								localStorage.setItem("session_member_id", result.data.member_id);
 								//localStorage.setItem("session_validity", result.data.mem_validity);
 								localStorage.setItem("session_id_email_id", result.data.email);
+								localStorage.setItem("session_id_club_id", selected_club);
 								//localStorage.setItem("session_id_balance", result.data.balance);
 								
 								//alert(result.email_id);
@@ -339,7 +363,8 @@ function ValidateStart()
 				//alert("Got Data");
 				
 				//showMessage("Got Data "+ result.text,null,appname,'OK');
-				CheckTicket(result.text);
+				//CheckTicket(result.text);
+				TicketShow(result.text)
 				
 				//$.mobile.changePage( "#barcode",null, true, true);
 				//$("#barcodeid").val(result.text);
@@ -383,7 +408,8 @@ $(document).on('pageinit', '#barcode', function()
 			 // alert($('#lform').serialize());
 			barcodeid = document.getElementById("barcodeid").value;
 			//alert(barcodeid);
-			CheckTicket(barcodeid);
+			//CheckTicket(barcodeid);
+			TicketShow(barcodeid);
 			
 			e.handled = true;
 		}
@@ -423,7 +449,7 @@ function CheckTicket(barcodeid)
 		});	
 		
 		//alert(serviceURL);
-		url = serviceURL + 'barcode/1';
+		url = serviceURL + 'barcode/' + localStorage.session_id_club_id;;
 		//alert(url);//return false;
 		var session = localStorage.session_id_admin;
 		//alert(session);
@@ -475,6 +501,132 @@ function CheckTicket(barcodeid)
 	}
 }
 
+function TicketShow(barcodeid)
+{
+	//Showmyid(1, 'Anil', '10 jan 2017', 'O', 'Mishra', 'EMP Kandivali', '191199', '818181', '2525 2255 2662 8181', 'http://localhost/push/h/clientkk/images/anil.png', '0', 'template1');
+	
+		//alert(serviceURL);
+		url = serviceURL + 'barcode/' + localStorage.session_id_club_id;;
+		//barcodeid = '115-1-GSJNH';
+		device_id= localStorage.device_uuid;
+		device_platform= localStorage.device_platform;
+		device_browser= localStorage.device_browser;
+		session_version= localStorage.session_version;
+		//alert(url);//return false;
+		var session = localStorage.session_id_admin;
+		var details = '';
+		//alert(session);
+		
+		$.ajax({url: url,
+			data: { barcode: barcodeid, session: session, member_id: localStorage.session_member_id, device_id: device_id, device_platform: device_platform, ver: session_version, device_browser: device_browser},
+			type: 'post',                   
+			async: 'true',
+			dataType: 'json',
+			beforeSend: function() {
+				// This callback function will trigger before data is sent
+				//$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
+				$.mobile.loading( "show" );
+			},
+			complete: function() {
+				// This callback function will trigger on data sent/received complete
+			   // $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+				$.mobile.loading( "hide" );
+			},
+			success: function (result) {
+				if(result.status == 'success') 
+				{
+					$.mobile.loading( "hide" );
+					//alert('ok');
+					//alert(result.status);
+					//alert(result.message);
+					details += result.data.service_name + '<br>';
+					details += 'Booking Date: ' + result.data.datec + '<br>';
+					if(result.data.ticket_type = 'M')
+					{
+						ticket_type = 'Member';
+					}
+					if(result.data.ticket_type = 'G')
+					{
+						ticket_type = 'Guest';
+					}					
+					details += 'Ticket Type: ' + ticket_type + ' (' + result.data.no_of_member +  ')<br>';
+					details += 'Service Date: ' + result.data.service_date + ' (' + result.data.timing +  ')<br>';
+					//details += 'Booking Date: ' + result.data.datec + '<br>';
+					if(result.data.court_name.length>0)
+					{
+							details += 'Court: ' + result.data.court_name + '<br>';
+					}					
+					Showmyid(result.data.name, result.data.mem_photo, details, result.data.membership_id, result.data.mem_validity, '0', 'template1');
+					//$.mobile.changePage( "#main",null, true, true);
+					//return false;
+					//alert(username);
+					//$('#username2').val(username);
+					//showMessage(result.message,null,appname,'OK');
+					//ShowHome();
+					
+				} else 
+				{
+					//alert(result.message);
+					$.mobile.loading( "hide" );								
+					showMessage(result.message,null,appname,'OK');
+					//alert('Logon unsuccessful!');
+				}
+			},
+			error: function (request,error) {
+				// This callback function will trigger on unsuccessful action                
+				//alert('Please check your data connection!');
+				showMessage('Please check your data connection!',null,'Error','OK');
+				$.mobile.loading( "hide" );	
+			}
+		});        
+}
+
+function Showmyid(name, image, details, cardno, validity, val_status, template)
+{
+		//alert(id);
+		//alert(name);
+		name = urldecode(name);
+		cardno = urldecode(cardno);
+			
+		var v_class = '';
+		
+		//myidcard =' <a href="#" onclick="ClosePopup();" class="ncp-popup-close">X</a>	';	
+		myidcard =' <a href="#" data-rel="back" class="ncp-popup-close">X</a>	';	
+		myidcard +='			<div class="ncp-popup-container ' + v_class + '">';
+		//myidcard += '			<img width="50" height="50" src="images/' + typeimage + '" class="premium" align="right">';
+		myidcard += '		 <div class="clear"></div>';
+		myidcard += '		<div class="ncp-popup-content roundinner spopup" align="center">';
+		myidcard += '		<img width="120" height="120" src="' + image + '" align="center">';
+		myidcard += '			<h1 class="stitle1">' + name +'</h1>';
+		
+		// if(m_type != 'O')
+		// {
+			// myidcard += '			<h5 class="h5">Valid upto : ' + validity + '</h5>';
+		// }
+		myidcard += '			<p class="showid">';
+		//myidcard += '			 <span id="myidshow">';
+		myidcard += details + '<br/><br/>';
+	
+		myidcard += '				<strong class="cardnumber">' + cardno + '</strong>';
+		//myidcard += '			 </span>';
+					 
+		myidcard += '			</p>';
+		myidcard += '		</div>';
+		myidcard += '	</div>';
+		//alert(myidcard);
+		console.log(myidcard);
+		
+		//alert(template);
+		if(template == 'template1')
+		{
+			$("#myidshow1").html(myidcard);
+			$("#ShowmyID1").popup( "open" );
+		}
+		
+		//alert(myidcard);return false;
+		
+}
+
 function TicketHistory()
 {
 	searchparam = "device_id=" + localStorage.device_uuid + "&device_platform=" +localStorage.device_platform + "&device_browser=" + localStorage.device_browser + "&session="+ localStorage.session_id_admin;
@@ -482,7 +634,7 @@ function TicketHistory()
 	
 	//return false;
 	//http://localhost/h_app/services/history_ticket/1?session=HA8ca047471e1c0810733849d1a3d13a013be6986d		
-	url = serviceURL + 'history_ticket/1'
+	url = serviceURL + 'history_ticket/' + localStorage.session_id_club_id;
 	//alert(url);
 
 	//return false;
@@ -539,6 +691,10 @@ function TicketHistory()
 				s_validity = result.data.service[i].s_validity;
 				sticket_id = result.data.service[i].sticket_id;
 				ticket_no = result.data.service[i].ticket_no;
+				ticket_type = result.data.service[i].ticket_type;
+				no_of_member = result.data.service[i].no_of_member;
+				mu_id = result.data.service[i].mu_id;
+				member_id = result.data.service[i].member_id;
 				chargeable = result.data.service[i].chargeable;
 				//charges = result.data.service[i].charges;
 				comments = result.data.service[i].comments;
@@ -552,9 +708,9 @@ function TicketHistory()
 				console.log(service_name);
 				console.log(img);
 				//service_name,datec,s_validity
-				console.log("<li><a href=\"#\" onclick=\"TicketID(" + "'" + ticket_no + "'," + "'" + service_name + "'," + "'" + datec + "'," + "'" + s_validity + "'" + ");return false;\">" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "</a></li>");
+				//console.log("<li><a href=\"#\" onclick=\"TicketID(" + "'" + ticket_no + "'," + "'" + service_name + "'," + "'" + datec + "'," + "'" + s_validity + "'" + ");return false;\">" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "</a></li>");
 				
-				$("#sum_list_afterlogin_list").append("<li><a href=\"#\">Service: " + service_name + "<br>Member: " + name + "<br>Booking Date: " + datec + "<br>Checking Date: " + used_time + "<br>Validity: " + s_validity + "</a></li>").listview("refresh");
+				$("#sum_list_afterlogin_list").append("<li><a href=\"#\">Service: " + service_name + "<br>Member: " + name + "<br>Booking Date: " + datec + "<br>Checking Date: " + used_time + "<br>No of Member: " + no_of_member + "<br>Validity: " + s_validity + "</a></li>").listview("refresh");
 				//$("#sum_list_afterlogin_list").append("<li>" + service_name + "<br>Date of Booking: " + datec + "<br>Validity: " + s_validity + "<br>" + "</li>").listview("refresh");
 									
 				//console.log(result[0][i].Location);
@@ -1936,7 +2092,129 @@ $(document).on('pageinit', '#renewdiaglog', function()
 	});    
 });
 
+function getAvailClub()
+{
+		//alert('a');
+		var contact_details_id = '';
+		
+		url = serviceURL + 'getAvailClub';
+					//alert(url);//return false;
+					
+		$.ajax({url: url,
+			data: {},
+			type: 'post',                   
+			async: 'true',
+			dataType: 'json',
+			beforeSend: function() {
+				// This callback function will trigger before data is sent
+				//$.mobile.showPageLoadingMsg(true); // This will show ajax spinner
+				$.mobile.loading( "show" );
+			},
+			complete: function() {
+				//alert('d');
+				// This callback function will trigger on data sent/received complete
+			   // $.mobile.hidePageLoadingMsg(); // This will hide ajax spinner
+				$.mobile.loading( "hide" );
+			},
+			success: function (result) {
+				//alert('e');
+				if(result.status == 'success') 
+				{
+					$.mobile.loading( "hide" );
+					//alert('ok');
+					//alert(result.status);
+			
+					$('#club_select').empty();
+					$('#club_select').append( new Option('Select Club *' ,'') );
+
+					for(i2=0; i2<Object.keys(result.club).length; i2++)
+					{
+						//alert(result.services[i2].building_name);
+						//alert(result.services[i2].wings);
+						loc_id = result.club[i2].loc_id;
+						club_name = result.club[i2].club_name;
+						club_logo = result.club[i2].club_logo;
+						city = result.club[i2].city;
+						//alert(loc_id + " "  + club_name);
+						
+						
+						$('#club_select').append( new Option(club_name + ', ' + city ,loc_id) );
+						//wings = result.club[i2].wings;
+						//alert(main_serv);
+						
+						//$('#data_wings').append( new Option(result.club[i2].wings,wings) );
+					
+					}
+				//alert('1');
+				//alert(JSON.stringify(result.club));
+				
+				$('#club_select option').each(function(){ 
+				   if($(this).text() == 'Select Club *') 
+						this.disabled=true;
+				});
+				$("#club_select")[0].selectedIndex = 0;	 
+				$('#club_select').change();
+
+					//showMessage(result.message,null,'Welcome','OK');
+					
+				} else 
+				{
+					//alert(result.message);
+					$.mobile.loading( "hide" );								
+					//showMessage(result.message,null,result.message,'OK');
+					//alert('Logon unsuccessful!');
+				}
+			},
+			error: function (request,error) {
+				// This callback function will trigger on unsuccessful action                
+				//alert('Please check your data connection!');
+				//showMessage('Please check your data connection!',null,'Error','OK');
+				$.mobile.loading( "hide" );	
+			}
+		});                   
+}
+
+
 function ExitApp()
 {
 	navigator.app.exitApp();
+}
+
+function urldecode(str) {
+  //       discuss at: http://phpjs.org/functions/urldecode/
+  //      original by: Philip Peterson
+  //      improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  //      improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  //      improved by: Brett Zamir (http://brett-zamir.me)
+  //      improved by: Lars Fischer
+  //      improved by: Orlando
+  //      improved by: Brett Zamir (http://brett-zamir.me)
+  //      improved by: Brett Zamir (http://brett-zamir.me)
+  //         input by: AJ
+  //         input by: travc
+  //         input by: Brett Zamir (http://brett-zamir.me)
+  //         input by: Ratheous
+  //         input by: e-mike
+  //         input by: lovio
+  //      bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  //      bugfixed by: Rob
+  // reimplemented by: Brett Zamir (http://brett-zamir.me)
+  //             note: info on what encoding functions to use from: http://xkr.us/articles/javascript/encode-compare/
+  //             note: Please be aware that this function expects to decode from UTF-8 encoded strings, as found on
+  //             note: pages served as UTF-8
+  //        example 1: urldecode('Kevin+van+Zonneveld%21');
+  //        returns 1: 'Kevin van Zonneveld!'
+  //        example 2: urldecode('http%3A%2F%2Fkevin.vanzonneveld.net%2F');
+  //        returns 2: 'http://kevin.vanzonneveld.net/'
+  //        example 3: urldecode('http%3A%2F%2Fwww.google.nl%2Fsearch%3Fq%3Dphp.js%26ie%3Dutf-8%26oe%3Dutf-8%26aq%3Dt%26rls%3Dcom.ubuntu%3Aen-US%3Aunofficial%26client%3Dfirefox-a');
+  //        returns 3: 'http://www.google.nl/search?q=php.js&ie=utf-8&oe=utf-8&aq=t&rls=com.ubuntu:en-US:unofficial&client=firefox-a'
+  //        example 4: urldecode('%E5%A5%BD%3_4');
+  //        returns 4: '\u597d%3_4'
+
+  return decodeURIComponent((str + '')
+    .replace(/%(?![\da-f]{2})/gi, function() {
+      // PHP tolerates poorly formed escape sequences
+      return '%25';
+    })
+    .replace(/\+/g, '%20'));
 }
