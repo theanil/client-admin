@@ -541,11 +541,11 @@ function TicketShow(barcodeid)
 					//alert(result.message);
 					details += result.data.service_name + '<br>';
 					details += 'Booking Date: ' + result.data.datec + '<br>';
-					if(result.data.ticket_type = 'M')
+					if(result.data.ticket_type == 'M')
 					{
 						ticket_type = 'Member';
 					}
-					if(result.data.ticket_type = 'G')
+					if(result.data.ticket_type == 'G')
 					{
 						ticket_type = 'Guest';
 					}					
